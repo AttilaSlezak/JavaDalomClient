@@ -1,10 +1,11 @@
-package main;
+package runnable_main;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import common.Property;
+import main.SearchClient;
 
 public class Main {
 
@@ -18,7 +19,8 @@ public class Main {
 		listOfProperties.add(Property.TITLE);
 		listOfProperties.add(Property.ARTIST);
 		//SearchClient search = new SearchClient("192.168.150.38", 10031, "C:/testfiles/", "track", listOfProperties);
-		SearchClient search = new SearchClient("localhost", 10031, "C:/testfiles/", "Pussy", listOfProperties);
+		SearchClient search = new SearchClient("localhost", 10031);
+		search.setSearchParameters("C:/testfiles/", "Pussy", listOfProperties);
 		List<File> result = search.communicateWithServer();
 		for (File f : result) {
 			System.out.println(f.getAbsolutePath());

@@ -28,28 +28,29 @@ public class SearchClient {
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	
-	public SearchClient(String ip, int port, Map<File, ID3Tag> filesAndTagsFromUser, String keywordFromUser, 
-			List<Property> propertiesFromUser) {
+	public SearchClient(String ip, int port) {
+		this.ip = ip;
 		this.port = port;
-		this.filesAndTagsFromUser = filesAndTagsFromUser;
-		this.keywordFromUser = keywordFromUser;
-		this.propertiesFromUser = propertiesFromUser;
 		startConnection();
 	}
 	
-	public SearchClient(String ip, int port, List<File> mp3Files, String keywordFromUser, 
+	public void setSearchParameters(Map<File, ID3Tag> filesAndTagsFromUser, String keywordFromUser, 
 			List<Property> propertiesFromUser) {
-		this.port = port;
+		this.filesAndTagsFromUser = filesAndTagsFromUser;
+		this.keywordFromUser = keywordFromUser;
+		this.propertiesFromUser = propertiesFromUser;
+	}
+	
+	public void setSearchParameters(List<File> mp3Files, String keywordFromUser, 
+			List<Property> propertiesFromUser) {
 		this.keywordFromUser = keywordFromUser;
 		this.propertiesFromUser = propertiesFromUser;
 		for (File oneFile : mp3Files) {
 			this.filesAndTagsFromUser.put(oneFile, ID3Tag.parse(oneFile));
 		}
-		startConnection();
 	}
-		
-	public SearchClient(String ip, int port, String path, String keywordFromUser, List<Property> propertiesFromUser) {
-		this.port = port;
+	
+	public void setSearchParameters(String path, String keywordFromUser, List<Property> propertiesFromUser) {
 		this.keywordFromUser = keywordFromUser;
 		this.propertiesFromUser = propertiesFromUser;
 		File directory = new File(path);
@@ -58,9 +59,7 @@ public class SearchClient {
 		for (File oneFile : mp3Files) {
 			this.filesAndTagsFromUser.put(oneFile, ID3Tag.parse(oneFile));
 		}
-		startConnection();
 	}
-	
 	public List<File> communicateWithServer() {
 		List<File> resultOfSearch = new ArrayList<>();
 		try {
