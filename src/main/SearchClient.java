@@ -103,8 +103,9 @@ public class SearchClient {
 	
 	public void endConnection() {
 		try {
-			ois.close();
+			oos.write(1);
 			oos.close();
+			ois.close();
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
