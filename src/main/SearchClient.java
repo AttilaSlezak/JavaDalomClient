@@ -34,6 +34,7 @@ public class SearchClient {
 		this.filesAndTagsFromUser = filesAndTagsFromUser;
 		this.keywordFromUser = keywordFromUser;
 		this.propertiesFromUser = propertiesFromUser;
+		startConnection();
 	}
 	
 	public SearchClient(String ip, int port, List<File> mp3Files, String keywordFromUser, 
@@ -44,6 +45,7 @@ public class SearchClient {
 		for (File oneFile : mp3Files) {
 			this.filesAndTagsFromUser.put(oneFile, ID3Tag.parse(oneFile));
 		}
+		startConnection();
 	}
 		
 	public SearchClient(String ip, int port, String path, String keywordFromUser, List<Property> propertiesFromUser) {
@@ -56,18 +58,17 @@ public class SearchClient {
 		for (File oneFile : mp3Files) {
 			this.filesAndTagsFromUser.put(oneFile, ID3Tag.parse(oneFile));
 		}
+		startConnection();
 	}
 	
 	public List<File> communicateWithServer() {
 		List<File> resultOfSearch = new ArrayList<>();
 		try {
-			startConnection();
-
-			oos.writeObject(0);
+			oos.write(0);
 			oos.writeObject(filesAndTagsFromUser);
-			oos.writeObject(0);
+			oos.write(0);
 			oos.writeObject(keywordFromUser);
-			oos.writeObject(0);
+			oos.write(0);
 			oos.writeObject(propertiesFromUser);
 			Object resultFromServer = ois.readObject();
 			
@@ -77,8 +78,6 @@ public class SearchClient {
 			} else if (resultFromServer instanceof List<?>) {
 				resultOfSearch = (List<File>) resultFromServer;
 			}
-			
-			endConnection();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -87,7 +86,7 @@ public class SearchClient {
 		return resultOfSearch;
 	}
 	
-	public void startConnection() {
+	private void startConnection() {
 		try {
 			socket = new Socket(ip, port);
 			OutputStream os = socket.getOutputStream();
@@ -110,17 +109,5 @@ public class SearchClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static void main(String[] args) {
-//		Map<File, ID3Tag> mp3Map = new HashMap<>();
-//		new SearchClient("localhost", 10031, );
-//		new SearchClient("localhost", 10031);
-//		new SearchClient("localhost", 10031);
-//		new SearchClient("localhost", 10031);
-		List<Property> listOfProperties = new ArrayList<>();
-		SearchClient search = new SearchClient("localhost", 10031, "C:/testfiles/", "track", listOfProperties);
-		search.communicateWithServer();
-		
 	}
 }
